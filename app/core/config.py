@@ -7,7 +7,7 @@ class Settings(BaseSettings):
 
     DATABASE_URL:str="sqlite:///./gse_trading.db"
 
-    DATA_FILE_PATH:str="data/gse_data.csv"
+    DATA_FILE_PATH:str="../../data-log/gse_data.csv"
 
     SECRET_KEY:str=os.environ.get("SECRET_KEY","your_default_secret_key")
     ACCESS_TOKEN_EXPIRE_MINUTES:int=60*24*8
