@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, Date, DateTime
+from sqlalchemy.types import Integer as SQLAlchemyInteger
 from app.core.database import Base
 
 class StockData(Base):
@@ -16,6 +17,6 @@ class StockData(Base):
     price_change = Column(Float)
     closing_bid_price = Column(Float)
     closing_offer_price = Column(Float)
-    total_shares_traded = Column(Integer)
+    total_shares_traded = Column(SQLAlchemyInteger) 
     total_value_traded = Column(Float)
     scraped_date = Column(DateTime)

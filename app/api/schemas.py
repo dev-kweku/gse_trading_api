@@ -14,7 +14,7 @@ class StockDataBase(BaseModel):
     price_change: Optional[float] = None
     closing_bid_price: Optional[float] = None
     closing_offer_price: Optional[float] = None
-    total_shares_traded: Optional[int] = None
+    total_shares_traded: Optional[int] = None  
     total_value_traded: Optional[float] = None
     scraped_date: Optional[datetime] = None
 
@@ -28,7 +28,7 @@ class StockDataInDBBase(StockDataBase):
     id: int
     
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class StockData(StockDataInDBBase):
     pass
@@ -45,3 +45,6 @@ class MarketSummary(BaseModel):
 class StockHistory(BaseModel):
     share_code: str
     history: List[StockData]
+    
+    class Config:
+        from_attributes = True
