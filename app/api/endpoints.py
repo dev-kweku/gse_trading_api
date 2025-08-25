@@ -77,28 +77,40 @@ def get_stock_history_endpoint(share_code: str, db: Session = Depends(get_db)):
     """
     Get historical data for a specific stock.
     """
-    # Query the database for the stock history
-    stock_records = db.query(StockData).filter(StockData.share_code == share_code).order_by(StockData.daily_date).all()
-    
-    if not stock_records:
-        raise HTTPException(status_code=404, detail=f"No history found for share code: {share_code}")
-    
-    history = []
-    for record in stock_records:
-        history.append({
-            "daily_date": record.daily_date,
-            "share_code": record.share_code,
-            "opening_price": record.opening_price,
-            "closing_price": record.closing_price,
-            "price_change": record.price_change,
-            "total_shares_traded": record.total_shares_traded,
-            "total_value_traded": record.total_value_traded
-        })
-    
-    return {
-        "share_code": share_code,
-        "history": history
-    }
+    try:
+        # Query the database for the stock history
+        stock_records = db.query(StockData).filter(StockData.share_code == share_code).order_by(StockData.daily_date).all()
+        
+        if not stock_records:
+            raise HTTPException(status_code=404, detail=f"No history found for share code: {share_code}")
+        
+        history = []
+        for record in stock_records:
+            try:
+                history.append({
+                    "daily_date": record.daily_date,
+                    "share_code": record.share_code,
+                    "opening_price": record.opening_price,
+                    "closing_price": record.closing_price,
+                    "price_change": record.price_change,
+                    "total_shares_traded": record.total_shares_traded,
+                    "total_value_traded": record.total_value_traded
+                })
+            except Exception as e:
+                print(f"Error processing record {record.id}: {e}")
+                continue
+        
+        return {
+            "share_code": share_code,
+            "history": history
+        }
+    except HTTPException:
+        # Re-raise HTTP exceptions
+        raise
+    except Exception as e:
+        # Log the error and return a 500 response
+        print(f"Error in get_stock_history_endpoint: {e}")
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @router.get("/market/summary/{date}", response_model=schemas.MarketSummary)
 def get_market_summary(date: date, db: Session = Depends(get_db)):
@@ -203,3 +215,41 @@ def delete_stock(stock_id: int, db: Session = Depends(get_db)):
     if not db_stock:
         raise HTTPException(status_code=404, detail="Stock not found")
     return {"message": "Stock deleted successfully"}
+
+
+
+
+
+@router.get("/debug/db-info")
+def get_db_info(db: Session = Depends(get_db)):
+    """Debug endpoint to check database status."""
+    try:
+        # Get total count of records
+        total_count = db.query(StockData).count()
+        
+        # Get distinct share codes
+        share_codes = db.query(StockData.share_code).distinct().all()
+        share_codes = [code[0] for code in share_codes]
+        
+        # Get date range
+        min_date = db.query(func.min(StockData.daily_date)).scalar()
+        max_date = db.query(func.max(StockData.daily_date)).scalar()
+        
+        # Get a sample record
+        sample = db.query(StockData).first()
+        
+        return {
+            "total_records": total_count,
+            "share_codes": share_codes[:10],  # First 10 share codes
+            "date_range": {
+                "min": min_date,
+                "max": max_date
+            },
+            "sample_record": {
+                "id": sample.id if sample else None,
+                "share_code": sample.share_code if sample else None,
+                "daily_date": sample.daily_date if sample else None
+            }
+        }
+    except Exception as e:
+        return {"error": str(e)}
