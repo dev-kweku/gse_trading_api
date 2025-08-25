@@ -14,25 +14,30 @@ router = APIRouter()
 
 df = load_data(settings.DATA_FILE_PATH)
 
+
+
+@router.get("/stocks/count")
+def get_stocks_count(db: Session = Depends(get_db)):
+    """Get the total count of stock records in the database."""
+    count = db.query(StockData).count()
+    return {"count": count}
+
+@router.get("/stocks/all",response_model=List[schemas.StockData])
+def get_all_stocks(db:Session=Depends(get_db)):
+    stocks=db.query(StockData).all()
+    return stocks
+
+
 @router.get("/stocks", response_model=List[schemas.StockData])
 def get_stocks(
     skip: int = 0,
-    limit: int = 100,
+    limit: int = 1000,  # Changed from a small number to 1000
     share_code: Optional[str] = Query(None, description="Filter by share code"),
     start_date: Optional[date] = Query(None, description="Filter by start date"),
     end_date: Optional[date] = Query(None, description="Filter by end date"),
     db: Session = Depends(get_db)
 ):
-    """
-    Retrieve stock data with optional filtering.
-    
-    - **skip**: Number of records to skip (for pagination)
-    - **limit**: Maximum number of records to return
-    - **share_code**: Filter by specific share code
-    - **start_date**: Filter by start date (inclusive)
-    - **end_date**: Filter by end date (inclusive)
-    """
-    query = db.query(StockData) 
+    query = db.query(StockData)
     
     if share_code:
         query = query.filter(StockData.share_code == share_code)

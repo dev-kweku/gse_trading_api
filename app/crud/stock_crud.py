@@ -16,11 +16,16 @@ def get_stock_data_by_date(db: Session, daily_date: str):
     return db.query(StockData).filter(StockData.daily_date == daily_date).all()
 
 def create_stock_data(db: Session, stock: StockDataCreate):
-    db_stock = StockData(**stock.dict())
-    db.add(db_stock)
-    db.commit()
-    db.refresh(db_stock)
-    return db_stock
+    try:
+        db_stock = StockData(**stock.dict())
+        db.add(db_stock)
+        db.commit()
+        db.refresh(db_stock)
+        return db_stock
+    except Exception as e:
+        db.rollback()
+        print(f"Error creating stock data: {e}")
+        raise e
 
 def update_stock_data(db: Session, id: int, stock: StockDataUpdate):
     db_stock = db.query(StockData).filter(StockData.id == id).first()

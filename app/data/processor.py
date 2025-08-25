@@ -13,25 +13,24 @@ def load_data(file_path: str) -> pd.DataFrame:
             print(f"Error: File not found: {file_path}")
             return pd.DataFrame()
         
-    
+        # Read the first line to understand the structure
         with open(file_path, 'r') as f:
             first_line = f.readline().strip()
             print(f"First line: {first_line}")
         
-        
+        # Read CSV with comma delimiter, using the first row as header
         df = pd.read_csv(file_path, header=0)
         
         print(f"Initial DataFrame shape: {df.shape}")
         print(f"Columns: {list(df.columns)}")
-        print(f"First few rows:\n{df.head()}")
         
-    
-        df = df[df['Share Code'] != 'Daily Date'] 
-        df = df.dropna(subset=['Share Code'])  
+        # Clean data
+        df = df[df['Share Code'] != 'Daily Date']  # Remove header rows
+        df = df.dropna(subset=['Share Code'])  # Remove rows with missing share code
         
         print(f"After cleaning: {df.shape}")
         
-    
+        # Rename columns to match our schema
         column_mapping = {
             'Daily Date': 'daily_date',
             'Share Code': 'share_code',
@@ -51,11 +50,12 @@ def load_data(file_path: str) -> pd.DataFrame:
         
         df = df.rename(columns=column_mapping)
         
-    
+        # Convert data types
+        # Fix date parsing by specifying dayfirst=True for DD/MM/YYYY format
         df['daily_date'] = pd.to_datetime(df['daily_date'], dayfirst=True, errors='coerce')
         df['scraped_date'] = pd.to_datetime(df['scraped_date'], errors='coerce')
         
-    
+        # Convert numeric columns
         numeric_cols = [
             'year_high', 'year_low', 'prev_closing_price', 'opening_price',
             'last_transaction_price', 'closing_price', 'price_change',
@@ -65,10 +65,18 @@ def load_data(file_path: str) -> pd.DataFrame:
             if col in df.columns:
                 df[col] = pd.to_numeric(df[col], errors='coerce')
         
-    
+        # Convert total_shares_traded to integer, handling fractional values
         df['total_shares_traded'] = pd.to_numeric(df['total_shares_traded'], errors='coerce')
-    
+        # Round fractional shares to the nearest integer
         df['total_shares_traded'] = df['total_shares_traded'].round().astype('Int64')  # Int64 supports NaN
+        
+        # Remove rows with missing daily_date (required field)
+        initial_count = len(df)
+        df = df.dropna(subset=['daily_date'])
+        final_count = len(df)
+        
+        if initial_count != final_count:
+            print(f"Removed {initial_count - final_count} rows with missing daily_date")
         
         print(f"Final DataFrame shape: {df.shape}")
         print(f"Sample data:\n{df.head()}")
