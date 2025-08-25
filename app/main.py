@@ -1,23 +1,28 @@
-import os
-import pandas as pd
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core import config
 from app.api import endpoints
 from app.api.models import StockData
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
+import pandas as pd
 
 app = FastAPI(
     title=config.settings.PROJECT_NAME,
     openapi_url=f"{config.settings.API_V1_STR}/openapi.json"
 )
 
-# Set up CORS
+# Mount static files
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Configure CORS (still needed for API calls)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Allows all origins
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
 )
 
 # Include API routes
@@ -25,7 +30,7 @@ app.include_router(endpoints.router, prefix=config.settings.API_V1_STR)
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to GSE Trading Data API"}
+    return FileResponse("static/index.html")
 
 def init_db():
     """Initialize the database with data from CSV if needed."""
@@ -74,7 +79,7 @@ def init_db():
         
         for index, row in df.iterrows():
             try:
-                # Skip rows with missing daily_date (should already be filtered in load_data, but double-check)
+                # Skip rows with missing daily_date
                 if pd.isna(row['daily_date']):
                     print(f"Skipping row {index}: missing daily_date")
                     error_count += 1

@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSE Trading Data API - Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .endpoint-card {
+            transition: all 0.3s ease;
+        }
+        .endpoint-card:hover {
+            border-left: 4px solid #667eea;
+        }
+        pre {
+            border-radius: 8px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .response-container {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 rounded-full gradient-bg flex items-center justify-center">
+                        <i class="fas fa-chart-line text-white"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">GSE Trading API</span>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#home" class="text-gray-600 hover:text-indigo-600 transition">Home</a>
+                    <a href="#features" class="text-gray-600 hover:text-indigo-600 transition">Features</a>
+                    <a href="#documentation" class="text-gray-600 hover:text-indigo-600 transition">Documentation</a>
+                    <a href="#playground" class="text-gray-600 hover:text-indigo-600 transition">API Playground</a>
+                    <a href="#examples" class="text-gray-600 hover:text-indigo-600 transition">Examples</a>
+                </div>
+                <button id="mobile-menu-button" class="md:hidden text-gray-600">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+            <div class="container mx-auto px-4 py-2 flex flex-col space-y-2">
+                <a href="#home" class="text-gray-600 hover:text-indigo-600 transition py-1">Home</a>
+                <a href="#features" class="text-gray-600 hover:text-indigo-600 transition py-1">Features</a>
+                <a href="#documentation" class="text-gray-600 hover:text-indigo-600 transition py-1">Documentation</a>
+                <a href="#playground" class="text-gray-600 hover:text-indigo-600 transition py-1">API Playground</a>
+                <a href="#examples" class="text-gray-600 hover:text-indigo-600 transition py-1">Examples</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="gradient-bg text-white py-20">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Ghana Stock Exchange Trading Data API</h1>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">Access comprehensive Ghana Stock Exchange trading data with our modern REST API. Built for developers, traders, and financial analysts.</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#documentation" class="bg-white text-indigo-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition">View Documentation</a>
+                <a href="#playground" class="bg-transparent border-2 border-white text-white px-6 py-3 rounded-lg font-medium hover:bg-white hover:text-indigo-600 transition">Try API Playground</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Key Features</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-md card-hover">
+                    <div class="w-14 h-14 rounded-full bg-indigo-100 flex items-center justify-center mb-4">
+                        <i class="fas fa-database text-indigo-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Comprehensive Data Access</h3>
+                    <p class="text-gray-600">Access all fields in the stock trading data including historical prices, volumes, and market summaries.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md card-hover">
+                    <div class="w-14 h-14 rounded-full bg-indigo-100 flex items-center justify-center mb-4">
+                        <i class="fas fa-filter text-indigo-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Flexible Filtering</h3>
+                    <p class="text-gray-600">Filter data by date range, share code, and other parameters to get exactly what you need.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md card-hover">
+                    <div class="w-14 h-14 rounded-full bg-indigo-100 flex items-center justify-center mb-4">
+                        <i class="fas fa-chart-pie text-indigo-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Market Analysis</h3>
+                    <p class="text-gray-600">Get daily market summaries including gainers, losers, and most active stocks for comprehensive analysis.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md card-hover">
+                    <div class="w-14 h-14 rounded-full bg-indigo-100 flex items-center justify-center mb-4">
+                        <i class="fas fa-history text-indigo-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Historical Data</h3>
+                    <p class="text-gray-600">Retrieve historical data for individual stocks to analyze trends and patterns over time.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md card-hover">
+                    <div class="w-14 h-14 rounded-full bg-indigo-100 flex items-center justify-center mb-4">
+                        <i class="fas fa-cogs text-indigo-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">CRUD Operations</h3>
+                    <p class="text-gray-600">Full create, read, update, delete functionality for complete data management capabilities.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md card-hover">
+                    <div class="w-14 h-14 rounded-full bg-indigo-100 flex items-center justify-center mb-4">
+                        <i class="fas fa-file-code text-indigo-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Auto-Documentation</h3>
+                    <p class="text-gray-600">Interactive API documentation with Swagger UI for easy exploration and testing.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Documentation Section -->
+    <section id="documentation" class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">API Documentation</h2>
+            
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="border-b">
+                    <div class="flex flex-wrap">
+                        <button class="tab-btn px-6 py-4 font-medium text-indigo-600 border-b-2 border-indigo-600" data-tab="overview">Overview</button>
+                        <button class="tab-btn px-6 py-4 font-medium text-gray-600 hover:text-indigo-600" data-tab="endpoints">Endpoints</button>
+                        <button class="tab-btn px-6 py-4 font-medium text-gray-600 hover:text-indigo-600" data-tab="authentication">Authentication</button>
+                        <button class="tab-btn px-6 py-4 font-medium text-gray-600 hover:text-indigo-600" data-tab="errors">Error Handling</button>
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <!-- Overview Tab -->
+                    <div id="overview" class="tab-content active">
+                        <h3 class="text-2xl font-semibold mb-4">API Overview</h3>
+                        <p class="mb-4">The GSE Trading Data API provides access to Ghana Stock Exchange trading data through a RESTful interface. All endpoints return JSON responses and use standard HTTP status codes.</p>
+                        
+                        <div class="mb-6">
+                            <h4 class="text-xl font-semibold mb-2">Base URL</h4>
+                            <div class="bg-gray-800 text-gray-100 p-4 rounded-lg">
+                                <code>http://localhost:8000/api/v1</code>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h4 class="text-xl font-semibold mb-2">Response Format</h4>
+                            <p>All API responses are in JSON format. Successful responses return HTTP status code 200 and contain the requested data. Error responses include an error message with details about what went wrong.</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-xl font-semibold mb-2">Data Model</h4>
+                            <p>The API works with stock trading data that includes the following fields:</p>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white border border-gray-200">
+                                    <thead>
+                                        <tr class="bg-gray-100">
+                                            <th class="py-2 px-4 border-b text-left">Field</th>
+                                            <th class="py-2 px-4 border-b text-left">Type</th>
+                                            <th class="py-2 px-4 border-b text-left">Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="py-2 px-4 border-b">id</td>
+                                            <td class="py-2 px-4 border-b">Integer</td>
+                                            <td class="py-2 px-4 border-b">Unique identifier</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2 px-4 border-b">daily_date</td>
+                                            <td class="py-2 px-4 border-b">Date</td>
+                                            <td class="py-2 px-4 border-b">Trading date</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2 px-4 border-b">share_code</td>
+                                            <td class="py-2 px-4 border-b">String</td>
+                                            <td class="py-2 px-4 border-b">Stock symbol</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2 px-4 border-b">year_high</td>
+                                            <td class="py-2 px-4 border-b">Float</td>
+                                            <td class="py-2 px-4 border-b">52-week high price</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2 px-4 border-b">year_low</td>
+                                            <td class="py-2 px-4 border-b">Float</td>
+                                            <td class="py-2 px-4 border-b">52-week low price</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2 px-4 border-b">opening_price</td>
+                                            <td class="py-2 px-4 border-b">Float</td>
+                                            <td class="py-2 px-4 border-b">Opening price</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2 px-4 border-b">closing_price</td>
+                                            <td class="py-2 px-4 border-b">Float</td>
+                                            <td class="py-2 px-4 border-b">Closing price</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2 px-4 border-b">price_change</td>
+                                            <td class="py-2 px-4 border-b">Float</td>
+                                            <td class="py-2 px-4 border-b">Price change from previous close</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2 px-4 border-b">total_shares_traded</td>
+                                            <td class="py-2 px-4 border-b">Integer</td>
+                                            <td class="py-2 px-4 border-b">Total shares traded</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2 px-4 border-b">total_value_traded</td>
+                                            <td class="py-2 px-4 border-b">Float</td>
+                                            <td class="py-2 px-4 border-b">Total value traded</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2 px-4 border-b">scraped_date</td>
+                                            <td class="py-2 px-4 border-b">DateTime</td>
+                                            <td class="py-2 px-4 border-b">Date and time when data was scraped</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Endpoints Tab -->
+                    <div id="endpoints" class="tab-content">
+                        <h3 class="text-2xl font-semibold mb-4">API Endpoints</h3>
+                        
+                        <div class="space-y-6">
+                            <!-- Get Stocks Endpoint -->
+                            <div class="endpoint-card border-l-4 border-transparent p-4 bg-gray-50 rounded-lg">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="text-xl font-semibold">Get Stocks</h4>
+                                        <p class="text-gray-600 mb-2">Retrieve stock data with optional filtering</p>
+                                        <div class="bg-gray-800 text-gray-100 p-3 rounded-lg text-sm mb-3">
+                                            <code>GET /stocks</code>
+                                        </div>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <h5 class="font-medium mb-1">Parameters</h5>
+                                    <ul class="text-sm text-gray-600 list-disc pl-5">
+                                        <li><code>skip</code> (integer, optional): Number of records to skip (default: 0)</li>
+                                        <li><code>limit</code> (integer, optional): Maximum number of records to return (default: 100)</li>
+                                        <li><code>share_code</code> (string, optional): Filter by specific share code</li>
+                                        <li><code>start_date</code> (date, optional): Filter by start date (inclusive)</li>
+                                        <li><code>end_date</code> (date, optional): Filter by end date (inclusive)</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <h5 class="font-medium mb-1">Example Request</h5>
+                                    <pre><code class="language-javascript">fetch('http://localhost:8000/api/v1/stocks?limit=10&share_code=MTNGH')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                </div>
+                                
+                                <div>
+                                    <h5 class="font-medium mb-1">Example Response</h5>
+                                    <pre><code class="language-json">[
+  {
+    "id": 1,
+    "daily_date": "2025-08-22",
+    "share_code": "MTNGH",
+    "year_high": 3.98,
+    "year_low": 2.5,
+    "prev_closing_price": 3.88,
+    "opening_price": 3.88,
+    "last_transaction_price": 3.89,
+    "closing_price": 3.89,
+    "price_change": 0.01,
+    "closing_bid_price": 3.85,
+    "closing_offer_price": 3.88,
+    "total_shares_traded": 834708,
+    "total_value_traded": 3244740.24,
+    "scraped_date": "2025-08-23T18:33:27"
+  }
+]</code></pre>
+                                </div>
+                            </div>
+                            
+                            <!-- Get Stock by ID Endpoint -->
+                            <div class="endpoint-card border-l-4 border-transparent p-4 bg-gray-50 rounded-lg">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="text-xl font-semibold">Get Stock by ID</h4>
+                                        <p class="text-gray-600 mb-2">Get a specific stock by ID</p>
+                                        <div class="bg-gray-800 text-gray-100 p-3 rounded-lg text-sm mb-3">
+                                            <code>GET /stocks/{stock_id}</code>
+                                        </div>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <h5 class="font-medium mb-1">Parameters</h5>
+                                    <ul class="text-sm text-gray-600 list-disc pl-5">
+                                        <li><code>stock_id</code> (integer, required): ID of the stock to retrieve</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <h5 class="font-medium mb-1">Example Request</h5>
+                                    <pre><code class="language-javascript">fetch('http://localhost:8000/api/v1/stocks/1')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                </div>
+                            </div>
+                            
+                            <!-- Get Stock by Share Code Endpoint -->
+                            <div class="endpoint-card border-l-4 border-transparent p-4 bg-gray-50 rounded-lg">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="text-xl font-semibold">Get Stock by Share Code</h4>
+                                        <p class="text-gray-600 mb-2">Get all records for a specific share code</p>
+                                        <div class="bg-gray-800 text-gray-100 p-3 rounded-lg text-sm mb-3">
+                                            <code>GET /stocks/code/{share_code}</code>
+                                        </div>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <h5 class="font-medium mb-1">Parameters</h5>
+                                    <ul class="text-sm text-gray-600 list-disc pl-5">
+                                        <li><code>share_code</code> (string, required): Share code of the stock to retrieve</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <h5 class="font-medium mb-1">Example Request</h5>
+                                    <pre><code class="language-javascript">fetch('http://localhost:8000/api/v1/stocks/code/MTNGH')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                </div>
+                            </div>
+                            
+                            <!-- Get Stock History Endpoint -->
+                            <div class="endpoint-card border-l-4 border-transparent p-4 bg-gray-50 rounded-lg">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="text-xl font-semibold">Get Stock History</h4>
+                                        <p class="text-gray-600 mb-2">Get historical data for a specific stock</p>
+                                        <div class="bg-gray-800 text-gray-100 p-3 rounded-lg text-sm mb-3">
+                                            <code>GET /stocks/{share_code}/history</code>
+                                        </div>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <h5 class="font-medium mb-1">Parameters</h5>
+                                    <ul class="text-sm text-gray-600 list-disc pl-5">
+                                        <li><code>share_code</code> (string, required): Share code of the stock</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <h5 class="font-medium mb-1">Example Request</h5>
+                                    <pre><code class="language-javascript">fetch('http://localhost:8000/api/v1/stocks/MTNGH/history')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                </div>
+                                
+                                <div>
+                                    <h5 class="font-medium mb-1">Example Response</h5>
+                                    <pre><code class="language-json">{
+  "share_code": "MTNGH",
+  "history": [
+    {
+      "daily_date": "2025-08-22",
+      "share_code": "MTNGH",
+      "opening_price": 3.88,
+      "closing_price": 3.89,
+      "price_change": 0.01,
+      "total_shares_traded": 834708,
+      "total_value_traded": 3244740.24
+    },
+    {
+      "daily_date": "2025-08-21",
+      "share_code": "MTNGH",
+      "opening_price": 3.85,
+      "closing_price": 3.88,
+      "price_change": 0.03,
+      "total_shares_traded": 8004287,
+      "total_value_traded": 31080483.35
+    }
+  ]
+}</code></pre>
+                                </div>
+                            </div>
+                            
+                            <!-- Get Market Summary Endpoint -->
+                            <div class="endpoint-card border-l-4 border-transparent p-4 bg-gray-50 rounded-lg">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="text-xl font-semibold">Get Market Summary</h4>
+                                        <p class="text-gray-600 mb-2">Get market summary for a specific date</p>
+                                        <div class="bg-gray-800 text-gray-100 p-3 rounded-lg text-sm mb-3">
+                                            <code>GET /market/summary/{date}</code>
+                                        </div>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">GET</span>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <h5 class="font-medium mb-1">Parameters</h5>
+                                    <ul class="text-sm text-gray-600 list-disc pl-5">
+                                        <li><code>date</code> (date, required): Date for the market summary</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <h5 class="font-medium mb-1">Example Request</h5>
+                                    <pre><code class="language-javascript">fetch('http://localhost:8000/api/v1/market/summary/2025-08-22')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+                                </div>
+                                
+                                <div>
+                                    <h5 class="font-medium mb-1">Example Response</h5>
+                                    <pre><code class="language-json">{
+  "date": "2025-08-22",
+  "total_stocks": 25,
+  "total_value_traded": 3567890.45,
+  "total_shares_traded": 1234567,
+  "gainers": [
+    {
+      "share_code": "MTNGH",
+      "price_change": 0.01
+    },
+    {
+      "share_code": "GCB",
+      "price_change": 0.24
+    }
+  ],
+  "losers": [
+    {
+      "share_code": "ETI",
+      "price_change": -0.01
+    }
+  ],
+  "most_active": [
+    {
+      "share_code": "MTNGH",
+      "total_value_traded": 3244740.24
+    },
+    {
+      "share_code": "GCB",
+      "total_value_traded": 113974.35
+    }
+  ]
+}</code></pre>
+                                </div>
+                            </div>
+                            
+                            <!-- Create Stock Endpoint -->
+                            <div class="endpoint-card border-l-4 border-transparent p-4 bg-gray-50 rounded-lg">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="text-xl font-semibold">Create Stock</h4>
+                                        <p class="text-gray-600 mb-2">Create a new stock record</p>
+                                        <div class="bg-gray-800 text-gray-100 p-3 rounded-lg text-sm mb-3">
+                                            <code>POST /stocks</code>
+                                        </div>
+                                    </div>
+                                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">POST</span>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <h5 class="font-medium mb-1">Request Body</h5>
+                                    <pre><code class="language-json">{
+  "daily_date": "2025-08-23",
+  "share_code": "TEST",
+  "year_high": 10.0,
+  "year_low": 5.0,
+  "prev_closing_price": 8.0,
+  "opening_price": 8.0,
+  "last_transaction_price": 8.5,
+  "closing_price": 8.5,
+  "price_change": 0.5,
+  "closing_bid_price": 8.4,
+  "closing_offer_price": 8.6,
+  "total_shares_traded": 1000,
+  "total_value_traded": 8500.0,
+  "scraped_date": "2025-08-23T18:33:27"
+}</code></pre>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <h5 class="font-medium mb-1">Example Request</h5>
+                                    <pre><code class="language-javascript">fetch('http://localhost:8000/api/v1/stocks', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    daily_date: "2025-08-23",
+    share_code: "TEST",
+    year_high: 10.0,
+    year_low: 5.0,
+    prev_closing_price: 8.0,
+    opening_price: 8.0,
+    last_transaction_price: 8.5,
+    closing_price: 8.5,
+    price_change: 0.5,
+    closing_bid_price: 8.4,
+    closing_offer_price: 8.6,
+    total_shares_traded: 1000,
+    total_value_traded: 8500.0,
+    scraped_date: "2025-08-23T18:33:27"
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));</code></pre>
+                                </div>
+                            </div>
+                            
+                            <!-- Update Stock Endpoint -->
+                            <div class="endpoint-card border-l-4 border-transparent p-4 bg-gray-50 rounded-lg">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="text-xl font-semibold">Update Stock</h4>
+                                        <p class="text-gray-600 mb-2">Update a stock record</p>
+                                        <div class="bg-gray-800 text-gray-100 p-3 rounded-lg text-sm mb-3">
+                                            <code>PUT /stocks/{stock_id}</code>
+                                        </div>
+                                    </div>
+                                    <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">PUT</span>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <h5 class="font-medium mb-1">Parameters</h5>
+                                    <ul class="text-sm text-gray-600 list-disc pl-5">
+                                        <li><code>stock_id</code> (integer, required): ID of the stock to update</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <h5 class="font-medium mb-1">Request Body</h5>
+                                    <pre><code class="language-json">{
+  "closing_price": 9.0,
+  "price_change": 1.0
+}</code></pre>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <h5 class="font-medium mb-1">Example Request</h5>
+                                    <pre><code class="language-javascript">fetch('http://localhost:8000/api/v1/stocks/1', {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    closing_price: 9.0,
+    price_change: 1.0
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));</code></pre>
+                                </div>
+                            </div>
+                            
+                            <!-- Delete Stock Endpoint -->
+                            <div class="endpoint-card border-l-4 border-transparent p-4 bg-gray-50 rounded-lg">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="text-xl font-semibold">Delete Stock</h4>
+                                        <p class="text-gray-600 mb-2">Delete a stock record</p>
+                                        <div class="bg-gray-800 text-gray-100 p-3 rounded-lg text-sm mb-3">
+                                            <code>DELETE /stocks/{stock_id}</code>
+                                        </div>
+                                    </div>
+                                    <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">DELETE</span>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <h5 class="font-medium mb-1">Parameters</h5>
+                                    <ul class="text-sm text-gray-600 list-disc pl-5">
+                                        <li><code>stock_id</code> (integer, required): ID of the stock to delete</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <h5 class="font-medium mb-1">Example Request</h5>
+                                    <pre><code class="language-javascript">fetch('http://localhost:8000/api/v1/stocks/1', {
+  method: 'DELETE'
+})
+.then(response => response.json())
+.then(data => console.log(data));</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Authentication Tab -->
+                    <div id="authentication" class="tab-content">
+                        <h3 class="text-2xl font-semibold mb-4">Authentication</h3>
+                        <p class="mb-4">Currently, the GSE Trading Data API does not require authentication for accessing the data. However, we plan to implement API key-based authentication in future versions to enhance security and monitor usage.</p>
+                        
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+                            <p class="text-blue-700">When authentication is implemented, you'll need to include your API key in the request headers using the <code>X-API-Key</code> header field.</p>
+                        </div>
+                        
+                        <h4 class="text-xl font-semibold mb-2">Future Authentication Example</h4>
+                        <pre><code class="language-javascript">fetch('http://localhost:8000/api/v1/stocks', {
+  headers: {
+    'X-API-Key': 'your_api_key_here'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data));</code></pre>
+                    </div>
+                    
+                    <!-- Errors Tab -->
+                    <div id="errors" class="tab-content">
+                        <h3 class="text-2xl font-semibold mb-4">Error Handling</h3>
+                        <p class="mb-4">The GSE Trading Data API uses standard HTTP status codes to indicate the success or failure of API requests. In case of errors, the API returns a JSON object with details about the error.</p>
+                        
+                        <div class="mb-6">
+                            <h4 class="text-xl font-semibold mb-2">HTTP Status Codes</h4>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white border border-gray-200">
+                                    <thead>
+                                        <tr class="bg-gray-100">
+                                            <th class="py-2 px-4 border-b text-left">Status Code</th>
+                                            <th class="py-2 px-4 border-b text-left">Meaning</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="py-2 px-4 border-b">200 OK</td>
+                                            <td class="py-2 px-4 border-b">Request successful</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2 px-4 border-b">201 Created</td>
+                                            <td class="py-2 px-4 border-b">Resource successfully created</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2 px-4 border-b">400 Bad Request</td>
+                                            <td class="py-2 px-4 border-b">Invalid request parameters</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2 px-4 border-b">404 Not Found</td>
+                                            <td class="py-2 px-4 border-b">Requested resource not found</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2 px-4 border-b">422 Unprocessable Entity</td>
+                                            <td class="py-2 px-4 border-b">Validation error</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2 px-4 border-b">500 Internal Server Error</td>
+                                            <td class="py-2 px-4 border-b">Server error</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-xl font-semibold mb-2">Error Response Format</h4>
+                            <p>In case of an error, the API returns a JSON object with the following structure:</p>
+                            <pre><code class="language-json">{
+  "detail": "Error message describing what went wrong"
+}</code></pre>
+                            
+                            <p class="mt-4">Example error response for a validation error:</p>
+                            <pre><code class="language-json">{
+  "detail": [
+    {
+      "loc": ["body", "daily_date"],
+      "msg": "field required",
+      "type": "value_error.missing"
+    }
+  ]
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- API Playground Section -->
+    <section id="playground" class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">API Playground</h2>
+            <p class="text-center max-w-2xl mx-auto mb-12">Test the GSE Trading Data API directly from your browser. Select an endpoint, fill in the parameters, and see the response in real-time.</p>
+            
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="border-b">
+                    <div class="flex flex-wrap">
+                        <button class="endpoint-tab-btn px-6 py-4 font-medium text-indigo-600 border-b-2 border-indigo-600" data-endpoint="stocks">Get Stocks</button>
+                        <button class="endpoint-tab-btn px-6 py-4 font-medium text-gray-600 hover:text-indigo-600" data-endpoint="stock-by-id">Get Stock by ID</button>
+                        <button class="endpoint-tab-btn px-6 py-4 font-medium text-gray-600 hover:text-indigo-600" data-endpoint="stock-by-code">Get Stock by Code</button>
+                        <button class="endpoint-tab-btn px-6 py-4 font-medium text-gray-600 hover:text-indigo-600" data-endpoint="stock-history">Get Stock History</button>
+                        <button class="endpoint-tab-btn px-6 py-4 font-medium text-gray-600 hover:text-indigo-600" data-endpoint="market-summary">Get Market Summary</button>
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <!-- Get Stocks Form -->
+                    <div id="stocks-form" class="endpoint-form active">
+                        <h3 class="text-xl font-semibold mb-4">Get Stocks</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Skip</label>
+                                <input type="number" id="stocks-skip" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" value="0">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Limit</label>
+                                <input type="number" id="stocks-limit" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" value="10">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Share Code (optional)</label>
+                                <input type="text" id="stocks-share-code" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g., MTNGH">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Start Date (optional)</label>
+                                <input type="date" id="stocks-start-date" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">End Date (optional)</label>
+                                <input type="date" id="stocks-end-date" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                        </div>
+                        <button id="test-stocks-btn" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">Test Endpoint</button>
+                    </div>
+                    
+                    <!-- Get Stock by ID Form -->
+                    <div id="stock-by-id-form" class="endpoint-form">
+                        <h3 class="text-xl font-semibold mb-4">Get Stock by ID</h3>
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Stock ID</label>
+                            <input type="number" id="stock-id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" value="1">
+                        </div>
+                        <button id="test-stock-by-id-btn" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">Test Endpoint</button>
+                    </div>
+                    
+                    <!-- Get Stock by Code Form -->
+                    <div id="stock-by-code-form" class="endpoint-form">
+                        <h3 class="text-xl font-semibold mb-4">Get Stock by Code</h3>
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Share Code</label>
+                            <input type="text" id="share-code" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" value="MTNGH">
+                        </div>
+                        <button id="test-stock-by-code-btn" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">Test Endpoint</button>
+                    </div>
+                    
+                    <!-- Get Stock History Form -->
+                    <div id="stock-history-form" class="endpoint-form">
+                        <h3 class="text-xl font-semibold mb-4">Get Stock History</h3>
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Share Code</label>
+                            <input type="text" id="history-share-code" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" value="MTNGH">
+                        </div>
+                        <button id="test-stock-history-btn" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">Test Endpoint</button>
+                    </div>
+                    
+                    <!-- Get Market Summary Form -->
+                    <div id="market-summary-form" class="endpoint-form">
+                        <h3 class="text-xl font-semibold mb-4">Get Market Summary</h3>
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                            <input type="date" id="summary-date" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" value="2025-08-22">
+                        </div>
+                        <button id="test-market-summary-btn" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">Test Endpoint</button>
+                    </div>
+                    
+                    <!-- Response Section -->
+                    <div class="mt-8">
+                        <h3 class="text-xl font-semibold mb-4">Response</h3>
+                        <div class="bg-gray-800 text-gray-100 p-4 rounded-lg response-container">
+                            <pre id="response-output" class="whitespace-pre-wrap">Response will appear here...</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Examples Section -->
+    <section id="examples" class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Usage Examples</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- JavaScript Example -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h3 class="text-xl font-semibold mb-4">JavaScript Example</h3>
+                    <pre><code class="language-javascript">// Fetch all stocks
+async function getAllStocks() {
+  try {
+    const response = await fetch('http://localhost:8000/api/v1/stocks?limit=100');
+    const data = await response.json();
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error('Error fetching stocks:', error);
+  }
+}
+
+// Fetch stock by share code
+async function getStockByCode(shareCode) {
+  try {
+    const response = await fetch(`http://localhost:8000/api/v1/stocks/code/${shareCode}`);
+    const data = await response.json();
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error('Error fetching stock:', error);
+  }
+}
+
+// Fetch market summary
+async function getMarketSummary(date) {
+  try {
+    const response = await fetch(`http://localhost:8000/api/v1/market/summary/${date}`);
+    const data = await response.json();
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error('Error fetching market summary:', error);
+  }
+}
+
+// Usage examples
+getAllStocks();
+getStockByCode('MTNGH');
+getMarketSummary('2025-08-22');</code></pre>
+                </div>
+                
+                <!-- Python Example -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h3 class="text-xl font-semibold mb-4">Python Example</h3>
+                    <pre><code class="language-python">import requests
+import json
+
+# Base URL for the API
+BASE_URL = "http://localhost:8000/api/v1"
+
+# Function to get all stocks
+def get_all_stocks():
+    try:
+        response = requests.get(f"{BASE_URL}/stocks?limit=100")
+        response.raise_for_status()  # Raise an exception for HTTP errors
+        data = response.json()
+        print(json.dumps(data, indent=2))
+        return data
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching stocks: {e}")
+        return None
+
+# Function to get stock by share code
+def get_stock_by_code(share_code):
+    try:
+        response = requests.get(f"{BASE_URL}/stocks/code/{share_code}")
+        response.raise_for_status()
+        data = response.json()
+        print(json.dumps(data, indent=2))
+        return data
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching stock: {e}")
+        return None
+
+# Function to get market summary
+def get_market_summary(date):
+    try:
+        response = requests.get(f"{BASE_URL}/market/summary/{date}")
+        response.raise_for_status()
+        data = response.json()
+        print(json.dumps(data, indent=2))
+        return data
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching market summary: {e}")
+        return None
+
+# Usage examples
+get_all_stocks()
+get_stock_by_code("MTNGH")
+get_market_summary("2025-08-22")</code></pre>
+                </div>
+                
+                <!-- React Example -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h3 class="text-xl font-semibold mb-4">React Example</h3>
+                    <pre><code class="language-javascript">import React, { useState, useEffect } from 'react';
+
+function StockData() {
+  const [stocks, setStocks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchStocks = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/v1/stocks?limit=100');
+        if (!response.ok) {
+          throw new Error('Failed to fetch stocks');
+        }
+        const data = await response.json();
+        setStocks(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStocks();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  return (
+    <div>
+      <h2>Ghana Stock Exchange Data</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Share Code</th>
+            <th>Opening Price</th>
+            <th>Closing Price</th>
+            <th>Change</th>
+          </tr>
+        </thead>
+        <tbody>
+          {stocks.map((stock) => (
+            <tr key={stock.id}>
+              <td>{stock.daily_date}</td>
+              <td>{stock.share_code}</td>
+              <td>{stock.opening_price}</td>
+              <td>{stock.closing_price}</td>
+              <td>{stock.price_change}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export default StockData;</code></pre>
+                </div>
+                
+                <!-- Data Visualization Example -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h3 class="text-xl font-semibold mb-4">Data Visualization Example</h3>
+                    <pre><code class="language-javascript">// Using Chart.js to visualize stock price trends
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables);
+
+async function visualizeStockHistory(shareCode) {
+  try {
+    // Fetch stock history data
+    const response = await fetch(`http://localhost:8000/api/v1/stocks/${shareCode}/history`);
+    const data = await response.json();
+    
+    // Extract dates and prices
+    const dates = data.history.map(item => item.daily_date);
+    const closingPrices = data.history.map(item => item.closing_price);
+    
+    // Create chart
+    const ctx = document.getElementById('stockChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: dates,
+        datasets: [{
+          label: `${shareCode} Closing Price`,
+          data: closingPrices,
+          borderColor: 'rgb(75, 192, 192)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          tension: 0.1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: `${shareCode} Stock Price History`
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
+            title: {
+              display: true,
+              text: 'Price (GH¢)'
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Date'
+            }
+          }
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error visualizing stock history:', error);
+  }
+}
+
+// Usage
+visualizeStockHistory('MTNGH');</code></pre>
+                </div>
+            </div>
+            
+            <!-- Live Chart Example -->
+            <div class="mt-12 bg-white rounded-xl shadow-md p-6">
+                <h3 class="text-xl font-semibold mb-4">Live Chart Example</h3>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Select Share Code</label>
+                    <select id="chart-share-code" class="w-full md:w-1/3 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="MTNGH">MTNGH</option>
+                        <option value="GCB">GCB</option>
+                        <option value="ETI">ETI</option>
+                        <option value="GOIL">GOIL</option>
+                        <option value="CAL">CAL</option>
+                    </select>
+                </div>
+                <button id="load-chart-btn" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition mb-4">Load Chart</button>
+                <div class="h-80">
+                    <canvas id="stock-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+                            <i class="fas fa-chart-line text-indigo-600"></i>
+                        </div>
+                        <span class="text-xl font-bold">GSE Trading API</span>
+                    </div>
+                    <p class="text-gray-400">Providing comprehensive access to Ghana Stock Exchange trading data.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-400 hover:text-white transition">Home</a></li>
+                        <li><a href="#documentation" class="text-gray-400 hover:text-white transition">Documentation</a></li>
+                        <li><a href="#playground" class="text-gray-400 hover:text-white transition">API Playground</a></li>
+                        <li><a href="#examples" class="text-gray-400 hover:text-white transition">Examples</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Resources</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">GitHub Repository</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Swagger UI</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Support</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Changelog</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contact</h4>
+                    <p class="text-gray-400 mb-2">Have questions or feedback?</p>
+                    <a href="mailto:frimpsup@gmail.com" class="text-indigo-400 hover:text-indigo-300 transition">frimpsup@gmail.com</a>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-github"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 GSE Trading Data API. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        // Tab functionality for documentation
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons and contents
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('text-indigo-600', 'border-b-2', 'border-indigo-600');
+                    btn.classList.add('text-gray-600');
+                });
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+
+                // Add active class to clicked button and corresponding content
+                button.classList.remove('text-gray-600');
+                button.classList.add('text-indigo-600', 'border-b-2', 'border-indigo-600');
+                const tabId = button.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Endpoint tab functionality for playground
+        const endpointTabButtons = document.querySelectorAll('.endpoint-tab-btn');
+        const endpointForms = document.querySelectorAll('.endpoint-form');
+
+        endpointTabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons and forms
+                endpointTabButtons.forEach(btn => {
+                    btn.classList.remove('text-indigo-600', 'border-b-2', 'border-indigo-600');
+                    btn.classList.add('text-gray-600');
+                });
+                endpointForms.forEach(form => {
+                    form.classList.remove('active');
+                });
+
+                // Add active class to clicked button and corresponding form
+                button.classList.remove('text-gray-600');
+                button.classList.add('text-indigo-600', 'border-b-2', 'border-indigo-600');
+                const endpointId = button.getAttribute('data-endpoint');
+                document.getElementById(`${endpointId}-form`).classList.add('active');
+            });
+        });
+
+        // API test functionality
+        const responseOutput = document.getElementById('response-output');
+        
+        // Test Get Stocks endpoint
+        document.getElementById('test-stocks-btn').addEventListener('click', async function() {
+            const skip = document.getElementById('stocks-skip').value;
+            const limit = document.getElementById('stocks-limit').value;
+            const shareCode = document.getElementById('stocks-share-code').value;
+            const startDate = document.getElementById('stocks-start-date').value;
+            const endDate = document.getElementById('stocks-end-date').value;
+            
+            let url = `http://localhost:8000/api/v1/stocks?skip=${skip}&limit=${limit}`;
+            
+            if (shareCode) url += `&share_code=${shareCode}`;
+            if (startDate) url += `&start_date=${startDate}`;
+            if (endDate) url += `&end_date=${endDate}`;
+            
+            responseOutput.textContent = 'Loading...';
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                responseOutput.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                responseOutput.textContent = `Error: ${error.message}`;
+            }
+        });
+        
+        // Test Get Stock by ID endpoint
+        document.getElementById('test-stock-by-id-btn').addEventListener('click', async function() {
+            const stockId = document.getElementById('stock-id').value;
+            const url = `http://localhost:8000/api/v1/stocks/${stockId}`;
+            
+            responseOutput.textContent = 'Loading...';
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                responseOutput.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                responseOutput.textContent = `Error: ${error.message}`;
+            }
+        });
+        
+        // Test Get Stock by Code endpoint
+        document.getElementById('test-stock-by-code-btn').addEventListener('click', async function() {
+            const shareCode = document.getElementById('share-code').value;
+            const url = `http://localhost:8000/api/v1/stocks/code/${shareCode}`;
+            
+            responseOutput.textContent = 'Loading...';
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                responseOutput.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                responseOutput.textContent = `Error: ${error.message}`;
+            }
+        });
+        
+        // Test Get Stock History endpoint
+        document.getElementById('test-stock-history-btn').addEventListener('click', async function() {
+            const shareCode = document.getElementById('history-share-code').value;
+            const url = `http://localhost:8000/api/v1/stocks/${shareCode}/history`;
+            
+            responseOutput.textContent = 'Loading...';
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                responseOutput.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                responseOutput.textContent = `Error: ${error.message}`;
+            }
+        });
+        
+        // Test Get Market Summary endpoint
+        document.getElementById('test-market-summary-btn').addEventListener('click', async function() {
+            const date = document.getElementById('summary-date').value;
+            const url = `http://localhost:8000/api/v1/market/summary/${date}`;
+            
+            responseOutput.textContent = 'Loading...';
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                responseOutput.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                responseOutput.textContent = `Error: ${error.message}`;
+            }
+        });
+        
+        // Chart functionality
+        document.getElementById('load-chart-btn').addEventListener('click', async function() {
+            const shareCode = document.getElementById('chart-share-code').value;
+            const url = `http://localhost:8000/api/v1/stocks/${shareCode}/history`;
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                // Extract dates and prices
+                const dates = data.history.map(item => item.daily_date);
+                const closingPrices = data.history.map(item => item.closing_price);
+                
+                // Destroy existing chart if it exists
+                const existingChart = Chart.getChart('stock-chart');
+                if (existingChart) {
+                    existingChart.destroy();
+                }
+                
+                // Create new chart
+                const ctx = document.getElementById('stock-chart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: dates,
+                        datasets: [{
+                            label: `${shareCode} Closing Price`,
+                            data: closingPrices,
+                            borderColor: 'rgb(99, 102, 241)',
+                            backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: `${shareCode} Stock Price History`
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                title: {
+                                    display: true,
+                                    text: 'Price (GH¢)'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Date'
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading chart:', error);
+            }
+        });
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    window.scrollTo({
+                        top: target.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
